@@ -1,0 +1,43 @@
+# Example target_config, matching app/state.py::TargetConfig.
+# Loaded by whatever CI job / script POSTs to /runs (see app/main.py::StartRunRequest).
+
+target_config:
+  base_url: "https://staging.example-shop.com"
+  auth_strategy: "form_login"
+  credentials_env_prefix: "STAGING_"        # -> STAGING_USERNAME / STAGING_PASSWORD
+
+  mfa:
+    strategy: "totp_seed"                    # totp_seed | human_in_loop | test_hook_bypass | none
+    totp_secret_env_var: "TARGET_TOTP_SECRET"
+    pause_timeout_seconds: 120
+
+  iframe_hint_selectors:
+    - "the embedded Stripe payment iframe on the checkout page"
+
+  shadow_dom_hint_components:
+    - "the <custom-date-picker> web component on the shipping form"
+
+  viewport:
+    width: 1440
+    height: 900
+
+llm_provider_config:
+  ingestion: "claude-sonnet-4-6"
+  executor: "claude-sonnet-4-6"
+  healer: "ollama/qwen2.5:32b-instruct"      # cheap/local for high-volume healing calls
+  triage: "claude-sonnet-4-6"
+
+max_healing_retries: 3
+
+# Example scenario to POST as `user_story` / `acceptance_criteria`:
+example_scenario:
+  user_story: >
+    As a returning customer, I want to add an item to my cart, complete MFA
+    login, and check out using a saved payment method, so that I can quickly
+    repurchase items I use often.
+  acceptance_criteria:
+    - "Given I am on the product page, when I click 'Add to Cart', then the cart badge shows 1 item"
+    - "Given I click 'Sign In', when I enter valid credentials, then I am prompted for an MFA code"
+    - "Given I enter a valid MFA code, when submitted, then I land on my account dashboard"
+    - "Given items are in my cart, when I proceed to checkout and drag my saved card to the top payment slot, then it is selected as the payment method"
+    - "Given a valid payment method is selected, when I click 'Place Order', then I see an order confirmation number"

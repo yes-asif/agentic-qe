@@ -1,0 +1,19 @@
+[project]
+name = "agentic-qe"
+version = "0.1.0"
+description = "Agentic, self-healing frontend test automation framework (LangGraph + Playwright MCP + Stagehand-style semantic actions)"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+authors = [
+    { name = "Syed Asifulla" }
+]
+requires-python = ">=3.11"
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.11",
+    "Framework :: FastAPI",
+]
+
+[project.urls]
+Homepage = "https://github.com/<your-username>/agentic-qe"
+Repository = "https://github.com/<your-username>/agentic-qe"

@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      - TARGET_TOTP_SECRET=${TARGET_TOTP_SECRET}
+      - CACHE_DB_PATH=/data/selector_cache.sqlite3
+      - REPORTS_DIR=/data/reports
+    volumes:
+      - agentic_qe_data:/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"   # lets the container reach a host-run Ollama
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "8501:8501"
+    environment:
+      - BACKEND_HTTP_URL=http://backend:8000
+      - BACKEND_WS_URL=ws://backend:8000
+    depends_on:
+      - backend
+
+volumes:
+  agentic_qe_data:
